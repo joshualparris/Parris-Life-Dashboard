@@ -18,6 +18,7 @@ This document tracks local projects and game builds that are currently in progre
 
 - `public/games/random-play/`
   - Placeholder link-based experience with `index.html` and `links.json`.
+  - Fixed: removed a broken GitHub Pages target from `links.json` so random redirects stay live.
 
 - `public/games/josh-nfc-audio/`
   - Progressive web app audio prototype.
