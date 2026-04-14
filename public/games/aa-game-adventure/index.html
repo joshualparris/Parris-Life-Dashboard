@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AA Game Adventure - Expedition</title>
+  <link rel="stylesheet" href="/css/joshhub-header.css">
+  <script src="/js/joshhub-header.js" defer></script>
+  <style>
+    :root {
+      --bg: #0b0f1f;
+      --panel: #10162d;
+      --panel-2: #141c36;
+      --accent: #5fe1ff;
+      --accent-2: #9cff7e;
+      --danger: #ff6b6b;
+      --text: #e6f0ff;
+      --muted: #9aa7c4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at 10% 10%, #1a2355 0%, #0a0d1b 45%, #070a14 100%);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .frame {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 12px;
+      height: 100vh;
+      padding: 12px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .title {
+      background: linear-gradient(90deg, rgba(95,225,255,0.2), rgba(156,255,126,0.1));
+      border: 1px solid rgba(95,225,255,0.4);
+      padding: 10px 14px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+    }
+
+    .title small {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    #game {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      border: 2px solid rgba(95,225,255,0.6);
+      background: linear-gradient(180deg, #0b2346 0%, #091326 100%);
+      box-shadow: 0 0 30px rgba(95,225,255,0.2);
+    }
+
+    .hud {
+      background: rgba(13, 18, 36, 0.95);
+      border: 1px solid rgba(95,225,255,0.35);
+      border-radius: 12px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .hud .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--accent);
+      color: #061018;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+      min-width: 90px;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(95,225,255,0.4);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    #log {
+      background: rgba(7, 10, 20, 0.8);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      max-height: 76px;
+      overflow-y: auto;
+    }
+
+    .side {
+      background: rgba(13, 18, 36, 0.96);
+      border: 1px solid rgba(95,225,255,0.35);
+      border-radius: 12px;
+      padding: 12px;
+      display: grid;
+      gap: 12px;
+      overflow-y: auto;
+      align-content: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .panel h3 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin: 6px 0;
+    }
+
+    .bar {
+      width: 100%;
+      height: 10px;
+      background: #070b18;
+      border: 1px solid rgba(95,225,255,0.3);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffcf5f, #ff8b5f);
+      transition: width 0.2s ease;
+    }
+
+    .bar-fill.energy {
+      background: linear-gradient(90deg, #5fe1ff, #9cff7e);
+    }
+
+    .list-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 16, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--panel-2);
+      border: 1px solid rgba(95,225,255,0.4);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    .card h1 { margin: 0; font-size: 26px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .tips { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(95,225,255,0.2);
+      border: 1px solid rgba(95,225,255,0.5);
+      font-size: 11px;
+      color: var(--text);
+      margin-right: 6px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 46px);
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .controls button {
+      min-width: auto;
+      padding: 8px 0;
+    }
+
+    .controls .spacer { visibility: hidden; }
+
+    .back-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .frame {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <section class="main">
+      <div class="title">
+        <div>AA Game Adventure - Expedition</div>
+        <small>WASD/Arrow keys to move. Collect all letters.</small>
+      </div>
+      <canvas id="game"></canvas>
+      <div class="hud">
+        <div class="row">
+          <button id="btn-boost">Boost</button>
+          <button id="btn-ping" class="secondary">Ping Relic</button>
+          <button id="btn-pause" class="secondary">Pause</button>
+          <button id="btn-restart">Restart</button>
+        </div>
+        <div id="log"></div>
+      </div>
+    </section>
+    <aside class="side">
+      <div class="panel">
+        <h3>Explorer</h3>
+        <div class="stat"><span>Level</span><span id="level">1</span></div>
+        <div class="stat"><span>Score</span><span id="score">0</span></div>
+        <div class="stat"><span>Letters</span><span id="letters">0/8</span></div>
+        <div class="bar"><div id="stamina-fill" class="bar-fill"></div></div>
+        <div class="stat"><span>Stamina</span><span id="stamina">100/100</span></div>
+        <div class="bar"><div id="energy-fill" class="bar-fill energy"></div></div>
+        <div class="stat"><span>Shield</span><span id="shield">50/50</span></div>
+      </div>
+      <div class="panel">
+        <h3>Quest</h3>
+        <div class="list-item" id="quest-line">Find the eight ancient letters to unlock the AA Gate.</div>
+        <div class="list-item" id="timer-line">Time: 0s</div>
+      </div>
+      <div class="panel">
+        <h3>Relics</h3>
+        <div id="relics"></div>
+      </div>
+      <div class="panel">
+        <h3>Touch Controls</h3>
+        <div class="controls">
+          <button class="spacer">.</button>
+          <button data-move="up">▲</button>
+          <button class="spacer">.</button>
+          <button data-move="left">◀</button>
+          <button data-move="down">▼</button>
+          <button data-move="right">▶</button>
+        </div>
+      </div>
+      <div class="panel">
+        <a class="back-link" href="/games">Back to Games</a>
+      </div>
+    </aside>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <div class="card">
+      <span class="pill">Adventure</span>
+      <h1>AA Game Adventure</h1>
+      <p>Navigate the ruins, collect the hidden letters, and dodge the sentinels.</p>
+      <div class="tips">
+        <div>Goal: collect all 8 letters to open the AA Gate.</div>
+        <div>Boost gives speed but drains stamina.</div>
+        <div>Shield absorbs damage from sentinels.</div>
+      </div>
+      <div class="row">
+        <button id="btn-start">Start Expedition</button>
+        <button id="btn-continue" class="secondary">Continue</button>
+        <button id="btn-audio" class="secondary">Audio: On</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SAVE_KEY = "aa-adventure-save-v1";
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const overlay = document.getElementById("overlay");
+    const continueBtn = document.getElementById("btn-continue");
+    const audioBtn = document.getElementById("btn-audio");
+    const logEl = document.getElementById("log");
+
+    const TILE = 32;
+    let gridW = 0;
+    let gridH = 0;
+    let paused = false;
+    let startedAt = null;
+    let elapsed = 0;
+
+    const audio = {
+      enabled: true,
+      ctx: null,
+      beep(freq, duration = 0.08) {
+        if (!this.enabled) return;
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.value = 0.12;
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      }
+    };
+
+    const player = {
+      x: 3,
+      y: 3,
+      stamina: 100,
+      maxStamina: 100,
+      shield: 50,
+      maxShield: 50,
+      score: 0,
+      level: 1,
+      collected: []
+    };
+
+    const letters = "AAADVNT".split("");
+    const relics = [];
+    const enemies = [];
+    const walls = [];
+    const messages = [];
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      gridW = Math.floor(canvas.width / TILE);
+      gridH = Math.floor(canvas.height / TILE);
+    }
+
+    function addMessage(msg) {
+      messages.unshift(msg);
+      if (messages.length > 5) messages.pop();
+      logEl.innerHTML = messages.map(m => `<div>${m}</div>`).join("");
+    }
+
+    function initWorld() {
+      relics.length = 0;
+      enemies.length = 0;
+      walls.length = 0;
+      player.x = 3;
+      player.y = 3;
+      player.stamina = player.maxStamina;
+      player.shield = player.maxShield;
+      player.score = 0;
+      player.collected = [];
+      startedAt = Date.now();
+      elapsed = 0;
+
+      for (let i = 0; i < letters.length; i++) {
+        relics.push({
+          x: 6 + (i * 3) % Math.max(6, gridW - 6),
+          y: 6 + (i * 5) % Math.max(6, gridH - 6),
+          letter: letters[i]
+        });
+      }
+
+      for (let i = 0; i < 22; i++) {
+        walls.push({
+          x: 2 + (i * 4) % Math.max(3, gridW - 3),
+          y: 4 + (i * 7) % Math.max(3, gridH - 3)
+        });
+      }
+
+      for (let i = 0; i < 4; i++) {
+        enemies.push({
+          x: 10 + i * 4,
+          y: 8 + i * 3,
+          dir: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+
+      addMessage("Explore the ruins and collect all letters.");
+      updateUI();
+      saveGame();
+    }
+
+    function updateUI() {
+      document.getElementById("level").textContent = player.level;
+      document.getElementById("score").textContent = player.score;
+      document.getElementById("letters").textContent = `${player.collected.length}/8`;
+      document.getElementById("stamina").textContent = `${Math.floor(player.stamina)}/${player.maxStamina}`;
+      document.getElementById("shield").textContent = `${Math.floor(player.shield)}/${player.maxShield}`;
+      document.getElementById("stamina-fill").style.width = `${(player.stamina / player.maxStamina) * 100}%`;
+      document.getElementById("energy-fill").style.width = `${(player.shield / player.maxShield) * 100}%`;
+      document.getElementById("timer-line").textContent = `Time: ${Math.floor(elapsed / 1000)}s`;
+      document.getElementById("relics").innerHTML = letters
+        .map(l => `<div class="list-item">${player.collected.includes(l) ? "✓" : "•"} ${l}</div>`)
+        .join("");
+    }
+
+    function move(dx, dy, boost) {
+      if (paused) return;
+      const speed = boost && player.stamina > 0 ? 2 : 1;
+      for (let step = 0; step < speed; step++) {
+        const nx = player.x + dx;
+        const ny = player.y + dy;
+        if (nx < 0 || ny < 0 || nx >= gridW || ny >= gridH) break;
+        if (walls.some(w => w.x === nx && w.y === ny)) break;
+        player.x = nx;
+        player.y = ny;
+        checkRelic();
+      }
+      if (boost) player.stamina = Math.max(0, player.stamina - 2);
+      else player.stamina = Math.min(player.maxStamina, player.stamina + 0.2);
+      saveGame();
+    }
+
+    function checkRelic() {
+      const relic = relics.find(r => r.x === player.x && r.y === player.y);
+      if (!relic) return;
+      player.collected.push(relic.letter);
+      player.score += 100;
+      audio.beep(680, 0.1);
+      addMessage(`Collected letter ${relic.letter}.`);
+      relics.splice(relics.indexOf(relic), 1);
+      if (player.collected.length === letters.length) {
+        addMessage("AA Gate unlocked! You win.");
+        showOverlay("Victory", "You recovered the AA letters. Expedition complete.");
+      }
+      updateUI();
+      saveGame();
+    }
+
+    function hitPlayer() {
+      if (player.shield > 0) {
+        player.shield = Math.max(0, player.shield - 8);
+      } else {
+        player.stamina = Math.max(0, player.stamina - 12);
+      }
+      audio.beep(220, 0.12);
+      addMessage("Hit by a sentinel!");
+      if (player.stamina <= 0) {
+        addMessage("You collapsed. Try again.");
+        showOverlay("Defeat", "Your stamina ran out. Restart the expedition.");
+      }
+      updateUI();
+    }
+
+    function updateEnemies() {
+      enemies.forEach(e => {
+        if (Math.random() < 0.02) e.dir *= -1;
+        const nx = e.x + e.dir;
+        if (nx < 1 || nx >= gridW - 1) e.dir *= -1;
+        else e.x = nx;
+        if (Math.abs(e.x - player.x) + Math.abs(e.y - player.y) <= 1) hitPlayer();
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#0c1b33";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(95,225,255,0.1)";
+      for (let x = 0; x < gridW; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x * TILE, 0);
+        ctx.lineTo(x * TILE, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < gridH; y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * TILE);
+        ctx.lineTo(canvas.width, y * TILE);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#2a3350";
+      walls.forEach(w => ctx.fillRect(w.x * TILE + 4, w.y * TILE + 4, TILE - 8, TILE - 8));
+
+      ctx.fillStyle = "#ffd35f";
+      relics.forEach(r => {
+        ctx.beginPath();
+        ctx.arc(r.x * TILE + TILE / 2, r.y * TILE + TILE / 2, TILE / 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#2b1b00";
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(r.letter, r.x * TILE + TILE / 2, r.y * TILE + TILE / 2 + 4);
+        ctx.fillStyle = "#ffd35f";
+      });
+
+      ctx.fillStyle = "#ff6b6b";
+      enemies.forEach(e => ctx.fillRect(e.x * TILE + 6, e.y * TILE + 6, TILE - 12, TILE - 12));
+
+      ctx.fillStyle = "#5fe1ff";
+      ctx.fillRect(player.x * TILE + 4, player.y * TILE + 4, TILE - 8, TILE - 8);
+      ctx.fillStyle = "#0b0f1f";
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("@", player.x * TILE + TILE / 2, player.y * TILE + TILE / 2 + 5);
+    }
+
+    function loop() {
+      if (!paused && startedAt) {
+        elapsed = Date.now() - startedAt;
+        updateEnemies();
+        updateUI();
+      }
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function showOverlay(title, message) {
+      overlay.querySelector("h1").textContent = title;
+      overlay.querySelector("p").textContent = message;
+      overlay.style.display = "flex";
+      paused = true;
+    }
+
+    function hideOverlay() {
+      overlay.style.display = "none";
+      paused = false;
+      if (!startedAt) startedAt = Date.now();
+    }
+
+    function saveGame() {
+      const data = {
+        player,
+        relics,
+        enemies,
+        walls,
+        startedAt,
+        elapsed
+      };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      continueBtn.disabled = !localStorage.getItem(SAVE_KEY);
+    }
+
+    function loadGame() {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return false;
+      try {
+        const data = JSON.parse(raw);
+        Object.assign(player, data.player);
+        relics.length = 0;
+        data.relics.forEach(r => relics.push(r));
+        enemies.length = 0;
+        data.enemies.forEach(e => enemies.push(e));
+        walls.length = 0;
+        data.walls.forEach(w => walls.push(w));
+        startedAt = Date.now() - data.elapsed;
+        elapsed = data.elapsed;
+        updateUI();
+        addMessage("Resumed your expedition.");
+        return true;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
+    }
+
+    const keys = {};
+    window.addEventListener("keydown", (e) => {
+      keys[e.key.toLowerCase()] = true;
+      if (overlay.style.display !== "none") return;
+      const boost = keys["shift"];
+      if (e.key === "ArrowUp" || e.key === "w") move(0, -1, boost);
+      if (e.key === "ArrowDown" || e.key === "s") move(0, 1, boost);
+      if (e.key === "ArrowLeft" || e.key === "a") move(-1, 0, boost);
+      if (e.key === "ArrowRight" || e.key === "d") move(1, 0, boost);
+    });
+
+    window.addEventListener("keyup", (e) => {
+      keys[e.key.toLowerCase()] = false;
+    });
+
+    document.querySelectorAll("[data-move]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const dir = btn.getAttribute("data-move");
+        const boost = false;
+        if (dir === "up") move(0, -1, boost);
+        if (dir === "down") move(0, 1, boost);
+        if (dir === "left") move(-1, 0, boost);
+        if (dir === "right") move(1, 0, boost);
+      });
+    });
+
+    document.getElementById("btn-boost").addEventListener("click", () => {
+      addMessage("Hold Shift while moving to boost.");
+    });
+
+    document.getElementById("btn-ping").addEventListener("click", () => {
+      if (relics.length === 0) {
+        addMessage("No relics left.");
+        return;
+      }
+      const target = relics[0];
+      addMessage(`Relic ping: ${target.letter} near (${target.x}, ${target.y}).`);
+    });
+
+    document.getElementById("btn-pause").addEventListener("click", () => {
+      paused = !paused;
+      addMessage(paused ? "Paused." : "Resumed.");
+    });
+
+    document.getElementById("btn-restart").addEventListener("click", () => {
+      initWorld();
+      hideOverlay();
+    });
+
+    document.getElementById("btn-start").addEventListener("click", () => {
+      initWorld();
+      hideOverlay();
+    });
+
+    continueBtn.addEventListener("click", () => {
+      if (!loadGame()) initWorld();
+      hideOverlay();
+    });
+
+    audioBtn.addEventListener("click", () => {
+      audio.enabled = !audio.enabled;
+      audioBtn.textContent = `Audio: ${audio.enabled ? "On" : "Off"}`;
+    });
+
+    window.addEventListener("resize", resize);
+
+    resize();
+    continueBtn.disabled = !localStorage.getItem(SAVE_KEY);
+    initWorld();
+    loop();
+
+    if (window.JoshHubHeader && window.JoshHubHeader.ensure) window.JoshHubHeader.ensure();
+  </script>
+</body>
+</html>

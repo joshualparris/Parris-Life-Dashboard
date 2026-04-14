@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+:root {
+  --background: #eef2f8;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --muted: #334155; /* slate-700 for readable secondary text in light mode */
+  --border: #d9e0ec;
+  --accent: #0ea5e9;
+}
+
+:root[data-theme="dark"] {
+  --background: #0a0f1a;
+  --foreground: #e6edf7;
+  --card: #0f1829;
+  --muted: #9fb0c8;
+  --border: #1f2a3c;
+  --accent: #22d3ee;
+}
+
+:root[data-theme="ember"] {
+  --background: #12090b;
+  --foreground: #fff5ea;
+  --card: #1b1114;
+  --muted: #e4c7b0;
+  --border: #3b2023;
+  --accent: #ff9b4a;
+}
+
+:root[data-theme="forest"] {
+  --background: #0a1511;
+  --foreground: #eefbf5;
+  --card: #11211a;
+  --muted: #c7dece;
+  --border: #243b2e;
+  --accent: #6cf0a0;
+}
+
+:root[data-theme="dungeon"] {
+  --background: #0b0b14;
+  --foreground: #f2edff;
+  --card: #131326;
+  --muted: #d0c6f2;
+  --border: #2e2442;
+  --accent: #b39bff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Ensure muted-foreground is readable in light mode */
+.text-muted-foreground {
+  color: var(--muted);
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(14, 165, 233, 0.18) 0, transparent 34%),
+    radial-gradient(circle at 88% 12%, rgba(251, 191, 36, 0.22) 0, transparent 30%),
+    radial-gradient(circle at 24% 82%, rgba(16, 185, 129, 0.18) 0, transparent 32%),
+    linear-gradient(145deg, #f7f9fc 0%, #e6ebf5 100%);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+body.dark {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(34, 211, 238, 0.16) 0, transparent 32%),
+    radial-gradient(circle at 76% 8%, rgba(245, 158, 11, 0.16) 0, transparent 28%),
+    radial-gradient(circle at 30% 88%, rgba(52, 211, 153, 0.14) 0, transparent 30%),
+    linear-gradient(160deg, #0a0f1a 0%, #0c1626 45%, #0b1221 100%);
+  color-scheme: dark;
+}
+
+body[data-theme="ember"] {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 138, 61, 0.22) 0, transparent 30%),
+    radial-gradient(circle at 76% 10%, rgba(255, 196, 116, 0.18) 0, transparent 26%),
+    radial-gradient(circle at 30% 86%, rgba(255, 91, 91, 0.18) 0, transparent 32%),
+    linear-gradient(160deg, #12090b 0%, #1a0f12 45%, #12090b 100%);
+  color-scheme: dark;
+}
+
+body[data-theme="forest"] {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(91, 226, 140, 0.2) 0, transparent 30%),
+    radial-gradient(circle at 76% 10%, rgba(34, 197, 94, 0.2) 0, transparent 26%),
+    radial-gradient(circle at 30% 86%, rgba(16, 185, 129, 0.16) 0, transparent 32%),
+    linear-gradient(160deg, #0a1511 0%, #0f1d16 45%, #0a1511 100%);
+  color-scheme: dark;
+}
+
+body[data-theme="dungeon"] {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(167, 139, 250, 0.2) 0, transparent 30%),
+    radial-gradient(circle at 76% 10%, rgba(99, 102, 241, 0.2) 0, transparent 26%),
+    radial-gradient(circle at 30% 86%, rgba(168, 85, 247, 0.16) 0, transparent 32%),
+    linear-gradient(160deg, #0b0b14 0%, #111124 45%, #0b0b14 100%);
+  color-scheme: dark;
+}
+
+/* Theme readability overrides for dark-like themes */
+body.dark .bg-white,
+body.dark .bg-white\/70,
+body.dark .bg-white\/80,
+body.dark .bg-white\/90 {
+  background-color: var(--card) !important;
+}
+
+body.dark .text-neutral-900,
+body.dark .text-neutral-800,
+body.dark .text-neutral-700 {
+  color: var(--foreground) !important;
+}
+
+body.dark .text-neutral-600,
+body.dark .text-neutral-500,
+body.dark .text-slate-500,
+body.dark .text-slate-400 {
+  color: var(--muted) !important;
+}
+
+body.dark .border-neutral-200,
+body.dark .border-neutral-300,
+body.dark .border-white\/60,
+body.dark .border-white\/70 {
+  border-color: var(--border) !important;
+}
+
+body.dark .shadow-sm,
+body.dark .shadow-md,
+body.dark .shadow-lg {
+  box-shadow: 0 18px 50px rgba(6, 10, 20, 0.35) !important;
+}
+
+/* Ensure light gradients flip to dark surfaces in dark-like themes */
+body.dark .from-white {
+  --tw-gradient-from: #0f172a !important;
+  --tw-gradient-to: rgb(15 23 42 / 0) !important;
+}
+body.dark .via-sky-50 {
+  --tw-gradient-stops: var(--tw-gradient-from), #0b1327, var(--tw-gradient-to) !important;
+}
+body.dark .to-emerald-50 {
+  --tw-gradient-to: #0b1327 !important;
+}
+
+main {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Page heading helpers (scoped to header blocks so cards remain untouched) */
+.page-heading .eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.page-heading .lede {
+  color: var(--muted);
+}
+
+body.dark .page-heading .eyebrow {
+  color: var(--muted);
+}
+
+body.dark .page-heading h1 {
+  color: var(--foreground);
+}
+
+body.dark .page-heading .lede {
+  color: var(--muted);
+}
+
+/* Light theme contrast improvements */
+body:not(.dark) .bg-white\/70,
+body:not(.dark) .bg-white\/80,
+body:not(.dark) .bg-white\/90 {
+  background-color: #ffffff !important;
+}
+
+body:not(.dark) .text-neutral-500,
+body:not(.dark) .text-neutral-600,
+body:not(.dark) .text-slate-500,
+body:not(.dark) .text-slate-400 {
+  color: #334155 !important;
+}
+
+body:not(.dark) .page-heading .eyebrow,
+body:not(.dark) .page-heading .lede {
+  color: #334155;
+}

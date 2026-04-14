@@ -1,0 +1,12 @@
+# JoshHub Improvements (2026)
+
+1. Add an accessibility skip link and main landmark for faster keyboard navigation. (Done)
+1. Highlight active navigation items with `aria-current` for clarity. (Done)
+1. Add a global Not Found page with quick links back to core areas. (Done)
+1. Add a global error boundary with a retry button. (Done)
+1. Add a dashboard loading skeleton to avoid blank states during hydration. (Done)
+1. Add a footer with quick actions and context. (Done)
+1. Improve global search UX with backdrop click-to-close and body scroll lock. (Done)
+1. Add a clearer keyboard shortcut hint using `<kbd>` styling. (Done)
+1. Expand SEO metadata with a title template and social cards. (Done)
+1. Replace non-ASCII separators with consistent ASCII punctuation for clean rendering. (Done)

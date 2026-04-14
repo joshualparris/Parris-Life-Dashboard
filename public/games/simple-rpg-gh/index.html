@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signal Garden</title>
+    <style>
+      html,body, #app { height: 100%; margin: 0; }
+      canvas { display: block; }
+      #overlay { position: absolute; left: 12px; top: 12px; color: #fff; font-family: sans-serif }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DJNYAj5S.js"></script>
+  </head>
+  <body>
+    <link rel="stylesheet" href="/css/joshhub-header.css">
+    <script src="/js/joshhub-header.js" defer></script>
+    <div id="app"></div>
+    <div id="overlay">WASD: move • Space: jump • Shift: glide • E: interact</div>
+    <script>
+      if(window.JoshHubHeader && window.JoshHubHeader.ensure) window.JoshHubHeader.ensure();
+      // Expose quick help in overlay and ensure focus for keyboard controls
+      document.addEventListener('DOMContentLoaded', ()=>{
+        const app = document.getElementById('app');
+        if(app) app.setAttribute('tabindex','0');
+      });
+    </script>
+
+  </body>
+  </html>

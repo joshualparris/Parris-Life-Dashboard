@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Boundary Road — Plan</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            margin: 2rem;
+            color: #111
+        }
+
+        a {
+            color: blue
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Boundary Road — Plan & Viewer Notes</h1>
+    <p>This page documents the Boundary Road pano viewer and hosting plan.</p>
+    <h2>Expected assets</h2>
+    <ul>
+        <li>/public/panos/boundary-road/*.jpg (360° equirectangular panos)</li>
+        <li>/public/panos/boundary-road/index.json (optional index with hotspots/meta)</li>
+    </ul>
+    <h2>How to publish</h2>
+    <ol>
+        <li>Copy exported pano images into <code>public/panos/boundary-road/</code>.</li>
+        <li>Add an index.json with hotspot positions if you want clickable points.</li>
+        <li>Replace the placeholder at <code>/games/boundary-road/index.html</code> with a viewer
+            (Pannellum/PhotoSphereViewer/etc.).</li>
+    </ol>
+    <p>If you want, I can integrate a small Pannellum viewer and wire it to the panos folder — say the word and I'll add
+        it.</p>
+</body>
+
+</html>

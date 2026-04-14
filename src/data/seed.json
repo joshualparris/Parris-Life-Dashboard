@@ -1,0 +1,143 @@
+{
+  "financeSummary": {
+    "joshNetMonthly": 4853,
+    "rentalIncome": 2687,
+    "rentPaid": 2427,
+    "mortgagePayment": 1300,
+    "reDrawAvailable": 12000,
+    "groceriesMonthly": 1529,
+    "fuelMonthly": 592
+  },
+  "ndisPlan": {
+    "totalBudget": 16000,
+    "planYear": "2026-2027",
+    "categories": [
+      {
+        "name": "OT",
+        "allocated": 4000,
+        "spent": 1400,
+        "provider": "Ruby"
+      },
+      {
+        "name": "Speech",
+        "allocated": 4000,
+        "spent": 2800,
+        "provider": "Gidgee Health"
+      },
+      {
+        "name": "Psychology",
+        "allocated": 4000,
+        "spent": 2100,
+        "provider": "PsychSolutions/Renae Matheson"
+      },
+      {
+        "name": "Play Therapy",
+        "allocated": 3000,
+        "spent": 1400,
+        "provider": "The Village Therapy/Bec"
+      },
+      {
+        "name": "Allied Health",
+        "allocated": 1000,
+        "spent": 136,
+        "provider": "RR Allied Health"
+      }
+    ]
+  },
+  "appointments": [
+    {
+      "id": "1",
+      "person": "Sylvie",
+      "provider": "Mrs R. Matheson",
+      "type": "Psychology",
+      "date": "2026-04-08T16:00:00Z",
+      "location": "Orange",
+      "notes": "long appt"
+    },
+    {
+      "id": "2",
+      "person": "Sylvie",
+      "provider": "Mrs R. Matheson",
+      "type": "Psychology",
+      "date": "2026-04-17T16:00:00Z",
+      "location": "Orange"
+    },
+    {
+      "id": "3",
+      "person": "Sylvie",
+      "provider": "Mrs R. Matheson",
+      "type": "Psychology",
+      "date": "2026-05-01T16:00:00Z",
+      "location": "Orange",
+      "notes": "long appt"
+    },
+    {
+      "id": "4",
+      "person": "Sylvie",
+      "provider": "Mrs R. Matheson",
+      "type": "Psychology",
+      "date": "2026-05-15T16:00:00Z",
+      "location": "Orange",
+      "notes": "long appt"
+    },
+    {
+      "id": "5",
+      "person": "Sylvie",
+      "provider": "Mrs R. Matheson",
+      "type": "Psychology",
+      "date": "2026-05-29T16:00:00Z",
+      "location": "Orange",
+      "notes": "long appt"
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "1",
+      "title": "Kristy nursing interview — Dubbo Health Service",
+      "module": "Kristy",
+      "status": "urgent",
+      "date": "2026-04-08"
+    },
+    {
+      "id": "2",
+      "title": "Centrelink appt — Kristy carer application for Sylvie",
+      "module": "Kristy",
+      "status": "soon",
+      "date": "2026-04-21"
+    },
+    {
+      "id": "3",
+      "title": "NDIS plan review documentation",
+      "module": "Sylvie",
+      "status": "ongoing"
+    },
+    {
+      "id": "4",
+      "title": "Rebuild redraw to $20k",
+      "module": "Finances",
+      "status": "soon"
+    },
+    {
+      "id": "5",
+      "title": "Lodge Carer Payment claim",
+      "module": "Sylvie",
+      "status": "soon"
+    }
+  ],
+  "healthLogs": [
+    {
+      "date": "2024-04-01",
+      "sleepHours": 8,
+      "hrvScore": 75,
+      "steps": 10000,
+      "mood": 4,
+      "notes": "Good day"
+    },
+    {
+      "date": "2024-04-02",
+      "sleepHours": 7.5,
+      "steps": 8000,
+      "mood": 3
+    }
+  ]
+}

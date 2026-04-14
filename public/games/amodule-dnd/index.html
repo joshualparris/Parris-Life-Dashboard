@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Module DnD - Tile RPG</title>
+  <style>
+    :root {
+      --bg: #0f1226;
+      --panel: #151a35;
+      --panel-strong: #10142b;
+      --accent: #35d6ff;
+      --accent-2: #7bff78;
+      --warn: #ff5b5b;
+      --text: #e9f0ff;
+      --muted: #8fa0c2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 20%, #1b2350 0%, #0a0d1f 45%, #090b18 100%);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #game-container {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 12px;
+      height: 100vh;
+      padding: 12px;
+    }
+
+    #game-area {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .title-bar {
+      background: linear-gradient(90deg, rgba(53,214,255,0.15), rgba(123,255,120,0.08));
+      border: 1px solid rgba(53,214,255,0.4);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .title-bar small {
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.4px;
+    }
+
+    #canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      border: 2px solid rgba(53,214,255,0.6);
+      background: linear-gradient(180deg, #0f2a4a 0%, #0b1530 100%);
+      box-shadow: 0 0 30px rgba(53,214,255,0.2);
+    }
+
+    #ui-bottom {
+      background: rgba(15, 20, 45, 0.95);
+      border: 1px solid rgba(53,214,255,0.3);
+      padding: 10px;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      background: var(--accent);
+      border: none;
+      color: #051018;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+      min-width: 92px;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(53,214,255,0.4);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(53,214,255,0.2);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    #message-log {
+      background: rgba(8, 12, 26, 0.8);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      max-height: 84px;
+      overflow-y: auto;
+    }
+
+    #sidebar {
+      background: rgba(15, 20, 45, 0.95);
+      border: 1px solid rgba(53,214,255,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      overflow-y: auto;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin: 6px 0;
+    }
+
+    .stat-name {
+      color: var(--muted);
+    }
+
+    .stat-bar {
+      width: 100%;
+      height: 10px;
+      background: #050815;
+      border: 1px solid rgba(53,214,255,0.3);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .stat-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2ee69e, #7bff78);
+      transition: width 0.2s ease;
+    }
+
+    .stat-fill.mana {
+      background: linear-gradient(90deg, #35d6ff, #6af7ff);
+    }
+
+    .section-title {
+      color: var(--accent-2);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .quest-item,
+    .inventory-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .quest-item.active {
+      border-color: rgba(123,255,120,0.6);
+      box-shadow: 0 0 12px rgba(123,255,120,0.15);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 10, 22, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      padding: 16px;
+    }
+
+    .overlay-card {
+      background: var(--panel-strong);
+      border: 1px solid rgba(53,214,255,0.4);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    .overlay-card h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .overlay-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tips {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .back-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(53,214,255,0.15);
+      border: 1px solid rgba(53,214,255,0.4);
+      font-size: 11px;
+      color: var(--text);
+      margin-right: 6px;
+    }
+
+    @media (max-width: 900px) {
+      #game-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+      }
+      #sidebar {
+        order: 2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="game-area">
+      <div class="title-bar">
+        <div>A Module DnD - Tile RPG</div>
+        <small>WASD to move, Space to interact, Click buttons to act</small>
+      </div>
+      <canvas id="canvas"></canvas>
+      <div id="ui-bottom">
+        <div class="btn-row">
+          <button id="btn-attack">Attack</button>
+          <button id="btn-interact">Interact</button>
+          <button id="btn-rest">Rest</button>
+          <button id="btn-inventory" class="secondary">Inventory</button>
+          <button id="btn-map" class="secondary">Map</button>
+          <button id="btn-reset">New Game</button>
+        </div>
+        <div id="message-log"></div>
+      </div>
+    </div>
+    <aside id="sidebar">
+      <div class="panel">
+        <div class="section-title">Hero Status</div>
+        <div class="stat"><span class="stat-name">Level</span><span id="level">1</span></div>
+        <div class="stat"><span class="stat-name">EXP</span><span id="exp">0/100</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="hp-fill"></div></div>
+        <div class="stat"><span class="stat-name">HP</span><span id="hp">100/100</span></div>
+        <div class="stat-bar"><div class="stat-fill mana" id="mana-fill"></div></div>
+        <div class="stat"><span class="stat-name">Mana</span><span id="mana">50/50</span></div>
+        <div class="stat"><span class="stat-name">Gold</span><span id="gold">50</span></div>
+        <div class="stat"><span class="stat-name">Area</span><span id="area">Village</span></div>
+      </div>
+      <div class="panel">
+        <div class="section-title">Stats</div>
+        <div class="stat"><span class="stat-name">ATK</span><span id="atk">5</span></div>
+        <div class="stat"><span class="stat-name">DEF</span><span id="def">2</span></div>
+      </div>
+      <div class="panel">
+        <div class="section-title">Active Quest</div>
+        <div id="active-quest" class="quest-item active">No active quest</div>
+      </div>
+      <div class="panel">
+        <div class="section-title">Quests</div>
+        <div id="quests-list"></div>
+      </div>
+      <div class="panel">
+        <div class="section-title">Inventory</div>
+        <div id="inventory-list"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="start-overlay" class="overlay">
+    <div class="overlay-card">
+      <span class="pill">Tile RPG</span>
+      <h1>Step into A Module DnD</h1>
+      <p>Explore the village, hunt goblins, collect herbs, and grow into a legend.</p>
+      <div class="tips">
+        <div>Goal: complete quests for gold and EXP.</div>
+        <div>Tip: rest costs gold but restores health and mana.</div>
+        <div>Tip: enemies are shown as red tiles, NPCs as green tiles.</div>
+      </div>
+      <div class="btn-row">
+        <button id="btn-start">Start Adventure</button>
+        <button id="btn-continue" class="secondary">Continue</button>
+        <a class="back-link" href="/games">Back to Games</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SAVE_KEY = "amodule-dnd-save-v1";
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const startOverlay = document.getElementById("start-overlay");
+    const continueBtn = document.getElementById("btn-continue");
+
+    const TILE_SIZE = 40;
+    let GRID_WIDTH = 0;
+    let GRID_HEIGHT = 0;
+
+    const player = {
+      x: 5,
+      y: 5,
+      hp: 100,
+      maxHp: 100,
+      mana: 50,
+      maxMana: 50,
+      level: 1,
+      exp: 0,
+      expToLevel: 100,
+      gold: 50,
+      atk: 5,
+      def: 2,
+      inventory: ["Shortsword", "Health Potion", "Bread"],
+      area: "Village"
+    };
+
+    const entities = [];
+    const quests = [
+      { id: 1, name: "Defeat Goblin Scout", location: "Forest", reward: 50, status: "active", target: "goblin" },
+      { id: 2, name: "Collect 3 Herbs", location: "Forest", reward: 30, status: "available", target: "herb" },
+      { id: 3, name: "Visit the Tavern", location: "Village", reward: 25, status: "available", target: "tavern" },
+      { id: 4, name: "Defeat Orc Warrior", location: "Mountain", reward: 100, status: "available", target: "orc" }
+    ];
+
+    const messageLog = [];
+    const keys = {};
+
+    class Entity {
+      constructor(x, y, type, name) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.name = name;
+        this.hp = type === "enemy" ? Math.floor(20 + Math.random() * 10) : 0;
+        this.maxHp = this.hp;
+        this.loot = type === "enemy" ? Math.floor(10 + Math.random() * 20) : 0;
+      }
+
+      draw() {
+        const screenX = this.x * TILE_SIZE;
+        const screenY = this.y * TILE_SIZE;
+
+        if (this.type === "enemy") {
+          ctx.fillStyle = "#ff4b4b";
+          ctx.fillRect(screenX + 4, screenY + 4, TILE_SIZE - 8, TILE_SIZE - 8);
+          ctx.fillStyle = "#fff";
+          ctx.font = "bold 12px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("G", screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2 + 4);
+        } else if (this.type === "npc") {
+          ctx.fillStyle = "#4bff7a";
+          ctx.fillRect(screenX + 4, screenY + 4, TILE_SIZE - 8, TILE_SIZE - 8);
+          ctx.fillStyle = "#0a0a0a";
+          ctx.font = "bold 12px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("?", screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2 + 4);
+        } else if (this.type === "item") {
+          ctx.fillStyle = "#ffd54b";
+          ctx.beginPath();
+          ctx.arc(screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2, TILE_SIZE / 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (this.type === "chest") {
+          ctx.fillStyle = "#cc8844";
+          ctx.fillRect(screenX + 6, screenY + 10, TILE_SIZE - 12, TILE_SIZE - 16);
+          ctx.strokeStyle = "#7a5a2b";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(screenX + 6, screenY + 10, TILE_SIZE - 12, TILE_SIZE - 16);
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      GRID_WIDTH = Math.floor(canvas.width / TILE_SIZE);
+      GRID_HEIGHT = Math.floor(canvas.height / TILE_SIZE);
+    }
+
+    function addMessage(msg) {
+      messageLog.unshift(msg);
+      if (messageLog.length > 6) messageLog.pop();
+      document.getElementById("message-log").innerHTML = messageLog.map(m => `<div>${m}</div>`).join("");
+    }
+
+    function initGame() {
+      entities.length = 0;
+      messageLog.length = 0;
+      addMessage("Welcome to A Module DnD. Explore, fight goblins, and complete quests.");
+
+      entities.push(new Entity(12, 8, "enemy", "Goblin Scout"));
+      entities.push(new Entity(18, 15, "enemy", "Goblin Ranger"));
+      entities.push(new Entity(10, 20, "enemy", "Orc Warrior"));
+      entities.push(new Entity(8, 5, "npc", "Village Elder"));
+      entities.push(new Entity(15, 5, "npc", "Merchant"));
+      entities.push(new Entity(20, 10, "item", "Herb"));
+      entities.push(new Entity(17, 18, "item", "Herb"));
+      entities.push(new Entity(7, 18, "item", "Herb"));
+      entities.push(new Entity(25, 25, "chest", "Treasure Chest"));
+
+      updateUI();
+      saveGame();
+    }
+
+    function newGame() {
+      player.x = 5;
+      player.y = 5;
+      player.hp = 100;
+      player.maxHp = 100;
+      player.mana = 50;
+      player.maxMana = 50;
+      player.level = 1;
+      player.exp = 0;
+      player.expToLevel = 100;
+      player.gold = 50;
+      player.atk = 5;
+      player.def = 2;
+      player.inventory = ["Shortsword", "Health Potion", "Bread"];
+      player.area = "Village";
+      quests.forEach((q, idx) => {
+        q.status = idx === 0 ? "active" : "available";
+      });
+      initGame();
+    }
+
+    function saveGame() {
+      const data = {
+        player,
+        quests,
+        entities: entities.map(e => ({
+          x: e.x,
+          y: e.y,
+          type: e.type,
+          name: e.name,
+          hp: e.hp,
+          maxHp: e.maxHp,
+          loot: e.loot
+        }))
+      };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      updateContinueState();
+    }
+
+    function loadGame() {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return false;
+      try {
+        const data = JSON.parse(raw);
+        Object.assign(player, data.player);
+        quests.length = 0;
+        data.quests.forEach(q => quests.push(q));
+        entities.length = 0;
+        data.entities.forEach(e => {
+          const entity = new Entity(e.x, e.y, e.type, e.name);
+          entity.hp = e.hp;
+          entity.maxHp = e.maxHp;
+          entity.loot = e.loot;
+          entities.push(entity);
+        });
+        updateUI();
+        addMessage("Loaded your last adventure.");
+        return true;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
+    }
+
+    function updateContinueState() {
+      const hasSave = Boolean(localStorage.getItem(SAVE_KEY));
+      continueBtn.disabled = !hasSave;
+    }
+
+    function movePlayer(dx, dy) {
+      const newX = player.x + dx;
+      const newY = player.y + dy;
+      if (newX < 0 || newX >= GRID_WIDTH || newY < 0 || newY >= GRID_HEIGHT) return;
+      player.x = newX;
+      player.y = newY;
+      const entityAtPos = entities.find(e => e.x === player.x && e.y === player.y);
+      if (entityAtPos) interact(entityAtPos);
+      regen();
+      saveGame();
+    }
+
+    function interact(entity) {
+      if (entity.type === "enemy") {
+        combat(entity);
+      } else if (entity.type === "npc") {
+        addMessage(`${entity.name}: "Welcome, brave adventurer."`);
+      } else if (entity.type === "item") {
+        player.inventory.push(entity.name);
+        addMessage(`Picked up ${entity.name}.`);
+        entities.splice(entities.indexOf(entity), 1);
+        checkQuestProgress("herb");
+      } else if (entity.type === "chest") {
+        const reward = Math.floor(50 + Math.random() * 100);
+        player.gold += reward;
+        addMessage(`Found ${reward} gold.`);
+        entities.splice(entities.indexOf(entity), 1);
+      }
+      updateUI();
+      saveGame();
+    }
+
+    function combat(enemy) {
+      const playerDmg = Math.max(1, player.atk + Math.floor(Math.random() * 5) - 2);
+      const enemyDmg = Math.max(1, Math.floor(Math.random() * 5) - player.def);
+
+      enemy.hp -= playerDmg;
+      addMessage(`You hit ${enemy.name} for ${playerDmg} damage.`);
+
+      if (enemy.hp <= 0) {
+        addMessage(`${enemy.name} defeated.`);
+        player.gold += enemy.loot;
+        player.exp += 25;
+        addMessage(`+25 EXP, +${enemy.loot} Gold`);
+        checkLevelUp();
+        checkQuestProgress("goblin");
+        if (enemy.name.includes("Orc")) checkQuestProgress("orc");
+        entities.splice(entities.indexOf(enemy), 1);
+      } else {
+        player.hp -= enemyDmg;
+        addMessage(`${enemy.name} hits you for ${enemyDmg} damage.`);
+        if (player.hp <= 0) {
+          player.hp = 0;
+          addMessage("You died. Start a new adventure.");
+          showOverlay("Defeated", "Your hero has fallen. Start again and try a different path.");
+        }
+      }
+      updateUI();
+      saveGame();
+    }
+
+    function checkLevelUp() {
+      while (player.exp >= player.expToLevel) {
+        player.exp -= player.expToLevel;
+        player.level++;
+        player.maxHp += 20;
+        player.hp = player.maxHp;
+        player.atk += 2;
+        player.def += 1;
+        addMessage(`Level up! You are now level ${player.level}.`);
+      }
+    }
+
+    function checkQuestProgress(type) {
+      quests.forEach(q => {
+        if (q.target === type && q.status === "active") {
+          q.status = "completed";
+          player.gold += q.reward;
+          addMessage(`Quest complete: "${q.name}" +${q.reward} Gold.`);
+        }
+      });
+    }
+
+    function rest() {
+      if (player.gold < 10) {
+        addMessage("Not enough gold to rest (costs 10).");
+        return;
+      }
+      player.gold -= 10;
+      player.hp = player.maxHp;
+      player.mana = player.maxMana;
+      addMessage("You rest and recover fully.");
+      updateUI();
+      saveGame();
+    }
+
+    function regen() {
+      if (player.mana < player.maxMana) player.mana += 2;
+      if (player.hp < player.maxHp) player.hp += 1;
+    }
+
+    function updateUI() {
+      document.getElementById("level").textContent = player.level;
+      document.getElementById("exp").textContent = `${player.exp}/${player.expToLevel}`;
+      document.getElementById("hp").textContent = `${player.hp}/${player.maxHp}`;
+      document.getElementById("hp-fill").style.width = `${(player.hp / player.maxHp) * 100}%`;
+      document.getElementById("mana").textContent = `${player.mana}/${player.maxMana}`;
+      document.getElementById("mana-fill").style.width = `${(player.mana / player.maxMana) * 100}%`;
+      document.getElementById("gold").textContent = player.gold;
+      document.getElementById("atk").textContent = player.atk;
+      document.getElementById("def").textContent = player.def;
+      document.getElementById("area").textContent = player.area;
+
+      const active = quests.find(q => q.status === "active");
+      document.getElementById("active-quest").textContent = active ? active.name : "No active quest";
+
+      document.getElementById("quests-list").innerHTML = quests
+        .filter(q => q.status !== "completed")
+        .map(q => `<div class="quest-item ${q.status === "active" ? "active" : ""}">${q.name} <span style="color:#ffd479">${q.reward}g</span></div>`)
+        .join("");
+
+      document.getElementById("inventory-list").innerHTML = player.inventory
+        .map(item => `<div class="inventory-item">- ${item}</div>`)
+        .join("");
+    }
+
+    function draw() {
+      ctx.fillStyle = "#0c1b33";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(53,214,255,0.15)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < GRID_WIDTH; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x * TILE_SIZE, 0);
+        ctx.lineTo(x * TILE_SIZE, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < GRID_HEIGHT; y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * TILE_SIZE);
+        ctx.lineTo(canvas.width, y * TILE_SIZE);
+        ctx.stroke();
+      }
+
+      entities.forEach(entity => entity.draw());
+
+      ctx.fillStyle = "#35d6ff";
+      ctx.fillRect(player.x * TILE_SIZE + 4, player.y * TILE_SIZE + 4, TILE_SIZE - 8, TILE_SIZE - 8);
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("@", player.x * TILE_SIZE + TILE_SIZE / 2, player.y * TILE_SIZE + TILE_SIZE / 2 + 5);
+    }
+
+    function gameLoop() {
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function showOverlay(title, message) {
+      startOverlay.querySelector("h1").textContent = title;
+      startOverlay.querySelector("p").textContent = message;
+      startOverlay.classList.remove("hidden");
+      startOverlay.style.display = "flex";
+    }
+
+    function hideOverlay() {
+      startOverlay.style.display = "none";
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (startOverlay.style.display !== "none") return;
+      keys[e.key.toLowerCase()] = true;
+      if (e.key === " ") {
+        const entity = entities.find(en => en.x === player.x && en.y === player.y);
+        if (entity) interact(entity);
+      }
+      if (e.key === "w") movePlayer(0, -1);
+      if (e.key === "a") movePlayer(-1, 0);
+      if (e.key === "s") movePlayer(0, 1);
+      if (e.key === "d") movePlayer(1, 0);
+    });
+
+    document.getElementById("btn-attack").addEventListener("click", () => {
+      const enemy = entities.find(e => e.type === "enemy" && Math.abs(e.x - player.x) + Math.abs(e.y - player.y) <= 2);
+      if (enemy) combat(enemy);
+      else addMessage("No nearby enemies.");
+    });
+
+    document.getElementById("btn-interact").addEventListener("click", () => {
+      const entity = entities.find(e => e.x === player.x && e.y === player.y);
+      if (entity) interact(entity);
+      else addMessage("Nothing to interact with.");
+    });
+
+    document.getElementById("btn-rest").addEventListener("click", rest);
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      newGame();
+      hideOverlay();
+    });
+
+    document.getElementById("btn-map").addEventListener("click", () => {
+      addMessage(`Map ping: (${player.x}, ${player.y}) with ${entities.length} entities nearby.`);
+    });
+
+    document.getElementById("btn-inventory").addEventListener("click", () => {
+      addMessage(`Inventory: ${player.inventory.slice(0, 4).join(", ")}${player.inventory.length > 4 ? "..." : ""}`);
+    });
+
+    document.getElementById("btn-start").addEventListener("click", () => {
+      newGame();
+      hideOverlay();
+    });
+
+    continueBtn.addEventListener("click", () => {
+      const loaded = loadGame();
+      if (!loaded) {
+        newGame();
+      }
+      hideOverlay();
+    });
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+    });
+
+    resizeCanvas();
+    updateContinueState();
+    initGame();
+    gameLoop();
+  </script>
+</body>
+</html>
