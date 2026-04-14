@@ -27,7 +27,8 @@ npm run start  # preview production build
 ## Unfinished games and projects
 - This repository now tracks local prototypes and incomplete game builds in `docs/UNFINISHED-GAMES.md`.
 - Current development focus: `public/games/newfileqqqwertuhvgjkk/index.html` — Whispering Wilds text-adventure demo.
-- To test locally, run `npm run dev` and open `http://localhost:3000/games/newfileqqqwertuhvgjkk/index.html`, or open the file directly in a browser.
+- To test locally, run `npm run dev` and open `http://localhost:3000/Parris-Life-Dashboard/games/newfileqqqwertuhvgjkk/index.html`.
+- For GitHub Pages, use `https://joshualparris.github.io/Parris-Life-Dashboard/games/newfileqqqwertuhvgjkk/index.html`.
 
 ## Editing the catalogue
 - Source of truth: `src/data/apps.ts`.

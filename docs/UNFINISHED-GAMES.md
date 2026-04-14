@@ -7,6 +7,8 @@ This document tracks local projects and game builds that are currently in progre
 - `public/games/newfileqqqwertuhvgjkk/`
   - Status: now a playable browser demo called **Whispering Wilds**.
   - Notes: text-adventure engine with `look`, `move`, `take`, `use`, `talk`, `attack`, `rest`, and `restart` commands.
+  - Local dev path: `http://localhost:3000/Parris-Life-Dashboard/games/newfileqqqwertuhvgjkk/index.html`.
+  - GitHub Pages path: `https://joshualparris.github.io/Parris-Life-Dashboard/games/newfileqqqwertuhvgjkk/index.html`.
   - Next: expand the map, add encounters, add story branches, add save/load or scene content.
 
 ## Other incomplete or experimental folders
