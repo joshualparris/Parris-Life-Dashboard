@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[15664,["/Parris-Life-Dashboard/_next/static/chunks/13h-0fd.p-1ga.js","/Parris-Life-Dashboard/_next/static/chunks/14d95v2q-d4b-.js","/Parris-Life-Dashboard/_next/static/chunks/0-9j2gwgjx6au.js","/Parris-Life-Dashboard/_next/static/chunks/0pkjv9pupa~qt.js","/Parris-Life-Dashboard/_next/static/chunks/17io6pn-hzmg0.js"],"default"]
+3:I[97367,["/Parris-Life-Dashboard/_next/static/chunks/13h-0fd.p-1ga.js","/Parris-Life-Dashboard/_next/static/chunks/14d95v2q-d4b-.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{}],[["$","script","script-0",{"src":"/Parris-Life-Dashboard/_next/static/chunks/0-9j2gwgjx6au.js","async":true}],["$","script","script-1",{"src":"/Parris-Life-Dashboard/_next/static/chunks/0pkjv9pupa~qt.js","async":true}],["$","script","script-2",{"src":"/Parris-Life-Dashboard/_next/static/chunks/17io6pn-hzmg0.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"kaf_g0keY2WzK9IK-F-2q"}
+5:null

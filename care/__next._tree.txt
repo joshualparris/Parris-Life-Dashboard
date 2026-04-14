@@ -1,0 +1,2 @@
+:HL["/Parris-Life-Dashboard/_next/static/chunks/11nuyn52wcv-v.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"care","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"kaf_g0keY2WzK9IK-F-2q"}
