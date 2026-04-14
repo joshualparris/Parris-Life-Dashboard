@@ -40,7 +40,7 @@ const routes = [
   { label: "Tasks", href: "/tasks" },
   { label: "Routines", href: "/routines" },
   { label: "Settings / Backups", href: "/settings/backups" },
-  { label: "Corporate Game", href: "/games/corporate" },
+  { label: "Corporate Game", href: "/Parris-Life-Dashboard/games/corporate" },
 ];
 
 export function GlobalSearch() {
