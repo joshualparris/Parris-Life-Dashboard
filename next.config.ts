@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export',
+  basePath: '/Parris-Life-Dashboard',
+  assetPrefix: '/Parris-Life-Dashboard',
+  trailingSlash: true,
+  distDir: 'docs',
   // Keep Turbopack rooted to this project when explicitly used.
   turbopack: {
     root: __dirname,
