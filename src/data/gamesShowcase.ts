@@ -261,6 +261,14 @@ export const gamesShowcase: ShowcaseGame[] = [
         localPath: "public/games/nexus-descent",
         playUrl: "/Parris-Life-Dashboard/games/nexus-descent/index.html",
     },
+    {
+        id: "whispering-wilds-demo",
+        title: "Whispering Wilds",
+        description: "Playable browser demo from an early local text-adventure prototype.",
+        localPath: "public/games/newfileqqqwertuhvgjkk",
+        playUrl: "/Parris-Life-Dashboard/games/newfileqqqwertuhvgjkk/index.html",
+        notes: "Now playable with inventory, gate unlocking, torch use, combat, and restart.",
+    },
 ];
 
 export default gamesShowcase;

@@ -24,6 +24,11 @@ npm run start  # preview production build
 ## Deploy
 - Vercel recommended: push to a repo and import in Vercel; set framework to Next.js (app directory).
 
+## Unfinished games and projects
+- This repository now tracks local prototypes and incomplete game builds in `docs/UNFINISHED-GAMES.md`.
+- Current development focus: `public/games/newfileqqqwertuhvgjkk/index.html` — Whispering Wilds text-adventure demo.
+- To test locally, run `npm run dev` and open `http://localhost:3000/games/newfileqqqwertuhvgjkk/index.html`, or open the file directly in a browser.
+
 ## Editing the catalogue
 - Source of truth: `src/data/apps.ts`.
 - Add new items with `id`, `name`, `category`, `status`, `tags`, `urls[]`, `primaryUrl`, optional `notes`.
